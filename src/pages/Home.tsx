@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Hero } from '../components/ui/Hero';
 import { Carousel } from '../components/ui/Carousel';
 import { CarouselSkeleton } from '../components/ui/Skeleton';
@@ -8,6 +9,9 @@ import { motion } from 'framer-motion';
 import { useTitle } from '../hooks/useTitle';
 
 export const Home = () => {
+    const location = useLocation();
+    const path = location.pathname;
+
     const [featured, setFeatured] = useState<MediaItem | null>(null);
     const [trendingMovies, setTrendingMovies] = useState<MediaItem[]>([]);
     const [trendingTv, setTrendingTv] = useState<MediaItem[]>([]);
@@ -16,56 +20,72 @@ export const Home = () => {
     const [popularTv, setPopularTv] = useState<MediaItem[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useTitle('Home - KASUMI');
+    // Determine page type
+    const isMovies = path === '/movies';
+    const isSeries = path === '/series';
+    const isAnime = path === '/anime';
+    const isHome = path === '/';
+
+    const pageTitle = isMovies ? 'Movies' : isSeries ? 'Series' : isAnime ? 'Anime' : 'Home';
+    useTitle(`${pageTitle} - KASUMI`);
 
     useEffect(() => {
-        const fetchData = async () => {
+
+
+        // Refactored fetch logic for better control
+        const loadContent = async () => {
             setLoading(true);
-
             try {
-                console.log('Fetching TMDB data...');
+                let featuredItem: MediaItem | null = null;
 
-                // Fetch all data in parallel
-                const [
-                    trendingMoviesData,
-                    trendingTvData,
-                    trendingAnimeData,
-                    popularMoviesData,
-                    popularTvData
-                ] = await Promise.all([
-                    getTrendingMovies(),
-                    getTrendingTv(),
-                    getTrendingAnime(),
-                    getPopularMovies(),
-                    getPopularTv()
-                ]);
+                if (isHome) {
+                    const [tm, tt, ta, pm, pt] = await Promise.all([
+                        getTrendingMovies(),
+                        getTrendingTv(),
+                        getTrendingAnime(),
+                        getPopularMovies(),
+                        getPopularTv()
+                    ]);
+                    setTrendingMovies(tm);
+                    setTrendingTv(tt);
+                    setTrendingAnime(ta);
+                    setPopularMovies(pm);
+                    setPopularTv(pt);
+                    featuredItem = tm[0];
+                } else if (isMovies) {
+                    const [tm, pm] = await Promise.all([
+                        getTrendingMovies(),
+                        getPopularMovies()
+                    ]);
+                    setTrendingMovies(tm);
+                    setPopularMovies(pm);
+                    featuredItem = tm[0];
+                } else if (isSeries) {
+                    const [tt, pt] = await Promise.all([
+                        getTrendingTv(),
+                        getPopularTv()
+                    ]);
+                    setTrendingTv(tt);
+                    setPopularTv(pt);
+                    featuredItem = tt[0];
+                } else if (isAnime) {
+                    const ta = await getTrendingAnime();
+                    setTrendingAnime(ta);
+                    featuredItem = ta[0];
+                }
 
-                console.log('Data fetched:', {
-                    movies: trendingMoviesData.length,
-                    tv: trendingTvData.length,
-                    anime: trendingAnimeData.length
-                });
-
-                setTrendingMovies(trendingMoviesData);
-                setTrendingTv(trendingTvData);
-                setTrendingAnime(trendingAnimeData);
-                setPopularMovies(popularMoviesData);
-                setPopularTv(popularTvData);
-
-                // Set featured item (first trending movie)
-                if (trendingMoviesData.length > 0) {
-                    setFeatured(trendingMoviesData[0]);
+                if (featuredItem) {
+                    setFeatured(featuredItem);
                 }
             } catch (error) {
-                console.error("Failed to fetch data", error);
+                console.error("Failed to load content", error);
             } finally {
-                // Always set loading to false
                 setLoading(false);
             }
         };
 
-        fetchData();
-    }, []);
+        loadContent();
+    }, [path, isHome, isMovies, isSeries, isAnime]);
 
     if (loading) {
         return (
@@ -116,24 +136,25 @@ export const Home = () => {
             {featured && <Hero item={featured} />}
 
             <div className="relative -mt-32 z-30 space-y-8 pb-20">
-                {trendingMovies.length > 0 && (
+                {/* Movies Section */}
+                {(isHome || isMovies) && trendingMovies.length > 0 && (
                     <Carousel title="TRENDING MOVIES" items={trendingMovies} />
                 )}
-
-                {trendingTv.length > 0 && (
-                    <Carousel title="TRENDING SERIES" items={trendingTv} />
-                )}
-
-                {trendingAnime.length > 0 && (
-                    <Carousel title="ANIME SPOTLIGHT" items={trendingAnime} />
-                )}
-
-                {popularMovies.length > 0 && (
+                {(isHome || isMovies) && popularMovies.length > 0 && (
                     <Carousel title="POPULAR MOVIES" items={popularMovies} />
                 )}
 
-                {popularTv.length > 0 && (
+                {/* Series Section */}
+                {(isHome || isSeries) && trendingTv.length > 0 && (
+                    <Carousel title="TRENDING SERIES" items={trendingTv} />
+                )}
+                {(isHome || isSeries) && popularTv.length > 0 && (
                     <Carousel title="POPULAR SERIES" items={popularTv} />
+                )}
+
+                {/* Anime Section */}
+                {(isHome || isAnime) && trendingAnime.length > 0 && (
+                    <Carousel title="ANIME SPOTLIGHT" items={trendingAnime} />
                 )}
             </div>
         </motion.div>

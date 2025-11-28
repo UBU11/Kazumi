@@ -1,6 +1,7 @@
 import React, { createContext, useContext, type ReactNode } from 'react';
 import { useFavorites as useFavoritesHook } from '../hooks/useFavorites';
 import type { MediaItem } from '../types';
+import { useToast } from './ToastContext';
 
 interface FavoritesContextType {
     favorites: MediaItem[];
@@ -14,9 +15,35 @@ const FavoritesContext = createContext<FavoritesContextType | undefined>(undefin
 
 export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const favoritesData = useFavoritesHook();
+    const { success, info } = useToast();
+
+    const addFavoriteWithToast = (item: MediaItem) => {
+        favoritesData.addFavorite(item);
+        success(`Added ${item.title} to favorites`);
+    };
+
+    const removeFavoriteWithToast = (id: number, mediaType: string) => {
+        favoritesData.removeFavorite(id, mediaType);
+        info('Removed from favorites');
+    };
+
+    const toggleFavoriteWithToast = (item: MediaItem) => {
+        if (favoritesData.isFavorite(item.id, item.media_type)) {
+            removeFavoriteWithToast(item.id, item.media_type);
+        } else {
+            addFavoriteWithToast(item);
+        }
+    };
+
+    const value = {
+        ...favoritesData,
+        addFavorite: addFavoriteWithToast,
+        removeFavorite: removeFavoriteWithToast,
+        toggleFavorite: toggleFavoriteWithToast,
+    };
 
     return (
-        <FavoritesContext.Provider value={favoritesData}>
+        <FavoritesContext.Provider value={value}>
             {children}
         </FavoritesContext.Provider>
     );
