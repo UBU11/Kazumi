@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { Navbar } from './components/ui/Navbar';
 import { Footer } from './components/layout/Footer';
 import { Home } from './pages/Home';
+import { Search } from './pages/Search';
 import { Details } from './pages/Details';
 import { Player } from './pages/Player';
 import { Favorites } from './pages/Favorites';
@@ -40,6 +41,7 @@ function App() {
             <AnimatePresence mode="wait">
               <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/:type/:id" element={<Details />} />
                 <Route path="/watch/:type/:id" element={<Player />} />
                 <Route path="/watch/:type/:id/:season/:episode" element={<Player />} />
