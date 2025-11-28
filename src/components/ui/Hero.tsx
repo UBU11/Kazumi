@@ -148,7 +148,7 @@ export const Hero: React.FC<HeroProps> = ({ item }) => {
                                 className="group relative radio-frame px-8 py-4 bg-[#1C8C4E] overflow-hidden analog-jitter"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                                <span className="relative flex items-center gap-3 text-[#000000] font-bold uppercase tracking-wider text-sm" style={{ fontFamily: 'Rajdhani, monospace' }}>
+                                <span className="relative flex items-center gap-3 text-[#FFFFFF] font-bold uppercase tracking-wider text-sm" style={{ fontFamily: 'Rajdhani, monospace' }}>
                                     <Play size={20} fill="currentColor" />
                                     PLAY
                                 </span>

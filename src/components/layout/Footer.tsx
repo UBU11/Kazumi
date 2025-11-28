@@ -15,8 +15,8 @@ export const Footer = () => {
             <div className="container mx-auto px-4 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-6">
                     <div className="text-center md:text-left">
-                        <h3 className="text-2xl font-display font-bold text-white mb-2">RETRO<span className="text-neon-blue">FLIX</span></h3>
-                        <p className="text-gray-500 text-sm">© 2025 RetroFlix. All rights reserved.</p>
+                        <h3 className="text-2xl font-display font-bold text-white mb-2">KASUMI<span className="text-[#1C8C4E]"></span></h3>
+                        <p className="text-gray-500 text-sm">© 2025 KASUMI. All rights reserved.</p>
                     </div>
 
                     <div className="flex gap-6">
