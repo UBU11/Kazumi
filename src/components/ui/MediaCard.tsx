@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Play, Heart } from 'lucide-react';
 import type { MediaItem } from '../../types';
 import { Link } from 'react-router-dom';
-import { useFavorites } from '../../hooks/useFavorites';
 
 interface MediaCardProps {
     item: MediaItem;
@@ -11,14 +10,14 @@ interface MediaCardProps {
 }
 
 export const MediaCard: React.FC<MediaCardProps> = ({ item, className }) => {
-    const { toggleFavorite, isFavorite } = useFavorites();
     const [isHovered, setIsHovered] = useState(false);
-    const favorite = isFavorite(item.id, item.media_type);
+    const [isFavorite, setIsFavorite] = useState(false);
 
     const handleFavoriteClick = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        toggleFavorite(item);
+        setIsFavorite(!isFavorite);
+        // TODO: Integrate with favorites context
     };
 
     return (
@@ -86,7 +85,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ item, className }) => {
                     whileTap={{ scale: 0.9 }}
                 >
                     <Heart
-                        className={`w-4 h-4 transition-colors ${favorite ? 'text-[#1C8C4E] fill-[#1C8C4E]' : 'text-[#EDEDED]'
+                        className={`w-4 h-4 transition-colors ${isFavorite ? 'text-[#1C8C4E] fill-[#1C8C4E]' : 'text-[#EDEDED]'
                             }`}
                     />
                 </motion.button>

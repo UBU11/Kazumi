@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, Heart, User, Radio } from 'lucide-react';
+import { Search, Heart, User } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 
@@ -50,16 +50,19 @@ export const Navbar = () => {
             <div className="relative max-w-[1920px] mx-auto px-6 lg:px-12">
                 <div className="flex items-center justify-between h-16">
 
-                    {/* Logo - Radio Dial Style */}
+                    {/* Logo - Boombox Style */}
                     <Link to="/" className="flex items-center gap-3 group">
                         <motion.div
-                            whileHover={{ rotate: 360 }}
-                            transition={{ duration: 0.8, ease: 'easeInOut' }}
-                            className="relative w-10 h-10"
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            className="relative w-14 h-14"
                         >
-                            <div className="radio-knob">
-                                <Radio className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-[#1C8C4E]" />
-                            </div>
+                            <img
+                                src="/logo.png"
+                                alt="KASUMI Boombox"
+                                className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(28,140,78,0.3)]"
+                            />
                         </motion.div>
                         <div className="flex flex-col">
                             <span

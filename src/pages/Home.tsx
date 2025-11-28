@@ -20,7 +20,12 @@ export const Home = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
+
             try {
+                console.log('Fetching TMDB data...');
+
+                // Fetch all data in parallel
                 const [
                     trendingMoviesData,
                     trendingTvData,
@@ -35,6 +40,12 @@ export const Home = () => {
                     getPopularTv()
                 ]);
 
+                console.log('Data fetched:', {
+                    movies: trendingMoviesData.length,
+                    tv: trendingTvData.length,
+                    anime: trendingAnimeData.length
+                });
+
                 setTrendingMovies(trendingMoviesData);
                 setTrendingTv(trendingTvData);
                 setTrendingAnime(trendingAnimeData);
@@ -48,6 +59,7 @@ export const Home = () => {
             } catch (error) {
                 console.error("Failed to fetch data", error);
             } finally {
+                // Always set loading to false
                 setLoading(false);
             }
         };
