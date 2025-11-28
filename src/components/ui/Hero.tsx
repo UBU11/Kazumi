@@ -178,7 +178,7 @@ export const Hero: React.FC<HeroProps> = ({ item }) => {
             </div>
 
             {/* Frequency Bars - Bottom */}
-            <div className="absolute bottom-0 left-0 right-0 h-20 flex items-end justify-center gap-1 px-12 pb-4 pointer-events-none">
+            <div className="absolute bottom-0 left-0 right-0 h-20 hidden md:flex items-end justify-center gap-1 px-12 pb-4 pointer-events-none">
                 {[...Array(40)].map((_, i) => (
                     <motion.div
                         key={i}

@@ -49,14 +49,14 @@ export const Carousel: React.FC<CarouselProps> = ({ title, items }) => {
             {/* Navigation Buttons - Radio Knob Style */}
             <button
                 onClick={() => scroll('left')}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-30 radio-knob opacity-0 group-hover:opacity-100 transition-opacity analog-jitter"
+                className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 z-30 radio-knob opacity-0 group-hover:opacity-100 transition-opacity analog-jitter"
             >
                 <ChevronLeft className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-[#1C8C4E]" />
             </button>
 
             <button
                 onClick={() => scroll('right')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-30 radio-knob opacity-0 group-hover:opacity-100 transition-opacity analog-jitter"
+                className="hidden md:block absolute right-2 top-1/2 -translate-y-1/2 z-30 radio-knob opacity-0 group-hover:opacity-100 transition-opacity analog-jitter"
             >
                 <ChevronRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-[#1C8C4E]" />
             </button>
