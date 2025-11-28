@@ -141,7 +141,13 @@ export const Hero: React.FC<HeroProps> = ({ item }) => {
                         transition={{ delay: 1 }}
                         className="flex flex-wrap gap-4"
                     >
-                        <Link to={`/${item.media_type}/${item.id}`}>
+                        <Link to={
+                            item.media_type === 'movie'
+                                ? `/watch/movie/${item.id}`
+                                : item.media_type === 'anime'
+                                    ? `/watch/anime/${item.id}/1/sub`
+                                    : `/watch/tv/${item.id}/1/1`
+                        }>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
@@ -155,16 +161,18 @@ export const Hero: React.FC<HeroProps> = ({ item }) => {
                             </motion.button>
                         </Link>
 
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            className="radio-frame px-8 py-4 bg-transparent border border-[#EDEDED] analog-jitter"
-                        >
-                            <span className="flex items-center gap-3 text-[#EDEDED] font-bold uppercase tracking-wider text-sm" style={{ fontFamily: 'Rajdhani, monospace' }}>
-                                <Info size={20} />
-                                MORE INFO
-                            </span>
-                        </motion.button>
+                        <Link to={`/${item.media_type}/${item.id}`}>
+                            <motion.button
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className="radio-frame px-8 py-4 bg-transparent border border-[#EDEDED] analog-jitter"
+                            >
+                                <span className="flex items-center gap-3 text-[#EDEDED] font-bold uppercase tracking-wider text-sm" style={{ fontFamily: 'Rajdhani, monospace' }}>
+                                    <Info size={20} />
+                                    MORE INFO
+                                </span>
+                            </motion.button>
+                        </Link>
                     </motion.div>
                 </motion.div>
             </div>

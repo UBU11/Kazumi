@@ -201,3 +201,108 @@ export const getByCategory = async (category: 'movie' | 'tv' | 'anime'): Promise
     if (category === 'anime') return getTrendingAnime();
     return [];
 };
+
+// Helper to get trailer from TMDB (since OMDb doesn't provide it)
+export const getTrailer = async (title: string, type: 'movie' | 'tv' | 'anime'): Promise<string | null> => {
+    try {
+        const tmdbType = type === 'anime' ? 'tv' : type;
+        // Using a public fallback key for trailers since OMDb doesn't support them
+        const TMDB_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb';
+
+        // 1. Search for the item
+        const searchRes = await fetch(
+            `https://api.themoviedb.org/3/search/${tmdbType}?api_key=${TMDB_KEY}&query=${encodeURIComponent(title)}`
+        );
+        const searchData = await searchRes.json();
+
+        if (!searchData.results || searchData.results.length === 0) return null;
+
+        const tmdbId = searchData.results[0].id;
+
+        // 2. Get videos
+        const videoRes = await fetch(
+            `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}/videos?api_key=${TMDB_KEY}`
+        );
+        const videoData = await videoRes.json();
+
+        if (!videoData.results) return null;
+
+        // 3. Find the best trailer
+        const trailer = videoData.results.find((v: any) =>
+            v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser')
+        );
+
+        return trailer ? trailer.key : null;
+    } catch (error) {
+        console.error('Error fetching trailer:', error);
+        return null;
+    }
+};
+
+// Get Director and their movies for the Universe Trail
+export const getDirectorUniverse = async (title: string): Promise<{ director: string; movies: MediaItem[] } | null> => {
+    try {
+        console.log(`[DirectorUniverse] Searching for director of: ${title}`);
+        const TMDB_KEY = '15d2ea6d0dc1d476efbca3eba2b9bbfb';
+
+        // 1. Search for the movie to get TMDB ID
+        const searchRes = await fetch(
+            `https://api.themoviedb.org/3/search/movie?api_key=${TMDB_KEY}&query=${encodeURIComponent(title)}`
+        );
+        const searchData = await searchRes.json();
+
+        if (!searchData.results || searchData.results.length === 0) {
+            console.warn('[DirectorUniverse] Movie not found in TMDB search');
+            return null;
+        }
+        const movieId = searchData.results[0].id;
+        console.log(`[DirectorUniverse] Found movie ID: ${movieId}`);
+
+        // 2. Get Credits to find Director
+        const creditsRes = await fetch(
+            `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${TMDB_KEY}`
+        );
+        const creditsData = await creditsRes.json();
+
+        const director = creditsData.crew?.find((c: any) => c.job === 'Director');
+        if (!director) {
+            console.warn('[DirectorUniverse] Director not found in credits');
+            return null;
+        }
+        console.log(`[DirectorUniverse] Found director: ${director.name} (${director.id})`);
+
+        // 3. Get Director's other movies
+        const personRes = await fetch(
+            `https://api.themoviedb.org/3/person/${director.id}/movie_credits?api_key=${TMDB_KEY}`
+        );
+        const personData = await personRes.json();
+
+        if (!personData.cast) {
+            console.warn('[DirectorUniverse] No other movies found for director');
+            return { director: director.name, movies: [] };
+        }
+
+        // Transform and sort by release date
+        const movies = personData.cast
+            .filter((m: any) => m.poster_path && m.release_date) // Only with posters and dates
+            .map((m: any) => ({
+                id: m.id, // Note: These are TMDB IDs, might mismatch our OMDb IDs but fine for display
+                title: m.title,
+                poster_path: `https://image.tmdb.org/t/p/w500${m.poster_path}`,
+                backdrop_path: `https://image.tmdb.org/t/p/original${m.backdrop_path}`,
+                overview: m.overview,
+                vote_average: m.vote_average,
+                release_date: m.release_date,
+                media_type: 'movie'
+            }))
+            .sort((a: any, b: any) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime())
+            .slice(0, 10); // Limit to 10
+
+        console.log(`[DirectorUniverse] Found ${movies.length} movies for director`);
+        return { director: director.name, movies };
+
+    } catch (error) {
+        console.error('[DirectorUniverse] Error fetching director universe:', error);
+        return null;
+    }
+};

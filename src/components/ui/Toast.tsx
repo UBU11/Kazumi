@@ -50,7 +50,7 @@ export const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
 
                 <div className="flex-1 min-w-0">
                     <h4 className="text-sm font-bold uppercase tracking-wider text-[#EDEDED] mb-1" style={{ fontFamily: 'Rajdhani, monospace' }}>
-                        {type === 'success' ? 'SYSTEM ALERT' : type === 'error' ? 'ERROR DETECTED' : 'NOTIFICATION'}
+                        {type === 'success' ? 'SIGNAL LOCKED' : type === 'error' ? 'SIGNAL LOST' : 'INCOMING TRANSMISSION'}
                     </h4>
                     <p className="text-xs text-gray-400 font-mono leading-relaxed">
                         {message}
@@ -78,8 +78,8 @@ export const Toast: React.FC<ToastProps> = ({ id, message, type, onClose }) => {
 
 export const ToastContainer: React.FC<{ toasts: ToastProps[], removeToast: (id: string) => void }> = ({ toasts, removeToast }) => {
     return (
-        <div className="fixed top-24 right-6 z-50 flex flex-col items-end pointer-events-none">
-            <div className="pointer-events-auto">
+        <div className="fixed bottom-6 right-6 z-50 flex flex-col-reverse items-end pointer-events-none gap-3">
+            <div className="pointer-events-auto contents">
                 <AnimatePresence mode="popLayout">
                     {toasts.map((toast) => (
                         <Toast key={toast.id} {...toast} onClose={removeToast} />

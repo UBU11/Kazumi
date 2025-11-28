@@ -1,25 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import type { MediaItem } from '../types';
+import React from 'react';
 import { MediaCard } from '../components/ui/MediaCard';
 import { Trash2, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTitle } from '../hooks/useTitle';
+import { useFavorites } from '../context/FavoritesContext';
 
 export const Favorites = () => {
-    const [favorites, setFavorites] = useState<MediaItem[]>([]);
+    const { favorites, removeFavorite } = useFavorites();
 
     useTitle('My List');
 
-    useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem('favorites') || '[]');
-        setFavorites(saved);
-    }, []);
-
-    const removeFavorite = (e: React.MouseEvent, id: number) => {
-        e.preventDefault(); // Prevent navigation if clicking the trash icon
-        const newFavs = favorites.filter(f => f.id !== id);
-        setFavorites(newFavs);
-        localStorage.setItem('favorites', JSON.stringify(newFavs));
+    const handleRemove = (e: React.MouseEvent, id: number, mediaType: string) => {
+        e.preventDefault();
+        removeFavorite(id, mediaType);
     };
 
     return (
@@ -48,7 +41,7 @@ export const Favorites = () => {
                             >
                                 <MediaCard item={item} />
                                 <button
-                                    onClick={(e) => removeFavorite(e, item.id)}
+                                    onClick={(e) => handleRemove(e, item.id, item.media_type)}
                                     className="absolute top-2 right-2 p-2 bg-black/60 rounded-full text-white hover:text-red-500 hover:bg-white transition-colors opacity-0 group-hover:opacity-100 z-20"
                                 >
                                     <Trash2 size={16} />

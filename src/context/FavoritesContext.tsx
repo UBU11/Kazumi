@@ -19,12 +19,12 @@ export const FavoritesProvider: React.FC<{ children: ReactNode }> = ({ children 
 
     const addFavoriteWithToast = (item: MediaItem) => {
         favoritesData.addFavorite(item);
-        success(`Added ${item.title} to favorites`);
+        success(`FREQUENCY SAVED: ${item.title}`);
     };
 
     const removeFavoriteWithToast = (id: number, mediaType: string) => {
         favoritesData.removeFavorite(id, mediaType);
-        info('Removed from favorites');
+        info('FREQUENCY CLEARED');
     };
 
     const toggleFavoriteWithToast = (item: MediaItem) => {
