@@ -27,8 +27,8 @@ interface TMDBResponse {
 const transformTMDBItem = (item: TMDBMovie, mediaType?: 'movie' | 'tv' | 'anime'): MediaItem => ({
     id: item.id,
     title: item.title || item.name || 'Untitled',
-    poster_path: item.poster_path ? `${TMDB_IMAGE_BASE}/w500${item.poster_path}` : null,
-    backdrop_path: item.backdrop_path ? `${TMDB_IMAGE_BASE}/original${item.backdrop_path}` : null,
+    poster_path: item.poster_path ? `${TMDB_IMAGE_BASE}/w500${item.poster_path}` : '',
+    backdrop_path: item.backdrop_path ? `${TMDB_IMAGE_BASE}/original${item.backdrop_path}` : '',
     overview: item.overview || 'No description available.',
     vote_average: item.vote_average || 0,
     release_date: item.release_date || item.first_air_date || 'Unknown',

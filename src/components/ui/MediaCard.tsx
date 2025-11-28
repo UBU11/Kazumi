@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play } from 'lucide-react';
+import { Play, Heart } from 'lucide-react';
 import type { MediaItem } from '../../types';
 import { Link } from 'react-router-dom';
+import { useFavorites } from '../../hooks/useFavorites';
 
 interface MediaCardProps {
     item: MediaItem;
@@ -10,11 +11,31 @@ interface MediaCardProps {
 }
 
 export const MediaCard: React.FC<MediaCardProps> = ({ item, className }) => {
+    const { toggleFavorite, isFavorite } = useFavorites();
+    const [isHovered, setIsHovered] = useState(false);
+    const favorite = isFavorite(item.id, item.media_type);
+
+    const handleFavoriteClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFavorite(item);
+    };
+
     return (
-        <Link to={`/${item.media_type}/${item.id}`} className={className}>
+        <Link
+            to={`/${item.media_type}/${item.id}`}
+            className={className}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
             <motion.div
                 className="group relative w-full aspect-[2/3] overflow-hidden cursor-pointer comic-outline bg-[#0A0A0A]"
-                whileHover={{ scale: 1.03, y: -4 }}
+                whileHover={{
+                    scale: 1.03,
+                    y: -4,
+                    rotateY: 2,
+                    rotateX: -2
+                }}
                 transition={{ duration: 0.2 }}
             >
                 {/* Image - Monochrome */}
@@ -23,9 +44,21 @@ export const MediaCard: React.FC<MediaCardProps> = ({ item, className }) => {
                     alt={item.title}
                     className="w-full h-full object-cover transition-all duration-500"
                     style={{
-                        filter: 'grayscale(100%) contrast(1.2)',
+                        filter: isHovered ? 'grayscale(100%) contrast(1.2)' : 'grayscale(100%) contrast(1.1)',
                     }}
                 />
+
+                {/* VHS Noise Overlay on Hover */}
+                {isHovered && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.15 }}
+                        className="absolute inset-0 pointer-events-none"
+                        style={{
+                            backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 400 400\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'3\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")',
+                        }}
+                    />
+                )}
 
                 {/* Halftone Corner (Subtle) */}
                 <div
@@ -44,6 +77,19 @@ export const MediaCard: React.FC<MediaCardProps> = ({ item, className }) => {
                     className="absolute inset-0 border border-[#1C8C4E] opacity-0 group-hover:opacity-100 transition-opacity neon-glow"
                     initial={{ opacity: 0 }}
                 />
+
+                {/* Favorite Button */}
+                <motion.button
+                    onClick={handleFavoriteClick}
+                    className="absolute top-2 right-2 z-40 p-2 radio-frame bg-[#0A0A0A]/80 backdrop-blur-sm"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <Heart
+                        className={`w-4 h-4 transition-colors ${favorite ? 'text-[#1C8C4E] fill-[#1C8C4E]' : 'text-[#EDEDED]'
+                            }`}
+                    />
+                </motion.button>
 
                 {/* Content */}
                 <div className="absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -96,7 +142,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({ item, className }) => {
                 {/* NEW Tag - Minimal Speech Bubble */}
                 {new Date(item.release_date).getFullYear() >= new Date().getFullYear() - 1 && (
                     <motion.div
-                        className="absolute top-2 right-2 z-30"
+                        className="absolute top-2 left-2 z-30"
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.2, type: "spring" }}
