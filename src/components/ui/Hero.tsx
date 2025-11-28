@@ -148,30 +148,30 @@ export const Hero: React.FC<HeroProps> = ({ item }) => {
                                     ? `/watch/anime/${item.id}/1/sub`
                                     : `/watch/tv/${item.id}/1/1`
                         }>
-                            <motion.button
+                            <motion.div
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="group relative radio-frame px-8 py-4 bg-[#1C8C4E] overflow-hidden analog-jitter"
+                                className="group relative radio-frame px-8 py-4 bg-[#1C8C4E] overflow-hidden analog-jitter cursor-pointer"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                                 <span className="relative flex items-center gap-3 text-[#FFFFFF] font-bold uppercase tracking-wider text-sm" style={{ fontFamily: 'Rajdhani, monospace' }}>
                                     <Play size={20} fill="currentColor" />
                                     PLAY
                                 </span>
-                            </motion.button>
+                            </motion.div>
                         </Link>
 
                         <Link to={`/${item.media_type}/${item.id}`}>
-                            <motion.button
+                            <motion.div
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="radio-frame px-8 py-4 bg-transparent border border-[#EDEDED] analog-jitter"
+                                className="radio-frame px-8 py-4 bg-transparent border border-[#EDEDED] analog-jitter cursor-pointer"
                             >
                                 <span className="flex items-center gap-3 text-[#EDEDED] font-bold uppercase tracking-wider text-sm" style={{ fontFamily: 'Rajdhani, monospace' }}>
                                     <Info size={20} />
                                     MORE INFO
                                 </span>
-                            </motion.button>
+                            </motion.div>
                         </Link>
                     </motion.div>
                 </motion.div>
