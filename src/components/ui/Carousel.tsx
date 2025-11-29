@@ -37,6 +37,22 @@ export const Carousel: React.FC<CarouselProps> = ({ title, items }) => {
                     </h2>
                     <div className="flex-1 h-px bg-gradient-to-r from-[#1C8C4E] to-transparent" />
 
+                    {/* Navigation Buttons */}
+                    <div className="hidden md:flex gap-3">
+                        <button
+                            onClick={() => scroll('left')}
+                            className="radio-knob w-8 h-8 hover:scale-110 transition-transform analog-jitter"
+                        >
+                            <ChevronLeft className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-[#1C8C4E]" />
+                        </button>
+                        <button
+                            onClick={() => scroll('right')}
+                            className="radio-knob w-8 h-8 hover:scale-110 transition-transform analog-jitter"
+                        >
+                            <ChevronRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 text-[#1C8C4E]" />
+                        </button>
+                    </div>
+
                     {/* Frequency Indicator */}
                     <div className="flex gap-px">
                         {[...Array(5)].map((_, i) => (
@@ -46,25 +62,10 @@ export const Carousel: React.FC<CarouselProps> = ({ title, items }) => {
                 </div>
             </motion.div>
 
-            {/* Navigation Buttons - Radio Knob Style */}
-            <button
-                onClick={() => scroll('left')}
-                className="hidden md:block absolute left-2 top-1/2 -translate-y-1/2 z-30 radio-knob opacity-0 group-hover:opacity-100 transition-opacity analog-jitter"
-            >
-                <ChevronLeft className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-[#1C8C4E]" />
-            </button>
-
-            <button
-                onClick={() => scroll('right')}
-                className="hidden md:block absolute right-2 top-1/2 -translate-y-1/2 z-30 radio-knob opacity-0 group-hover:opacity-100 transition-opacity analog-jitter"
-            >
-                <ChevronRight className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-5 text-[#1C8C4E]" />
-            </button>
-
             {/* Carousel Container */}
             <div
                 ref={scrollRef}
-                className="flex gap-4 overflow-x-scroll scrollbar-hide px-6 lg:px-12 scroll-smooth"
+                className="flex gap-4 overflow-x-scroll scrollbar-hide px-6 lg:px-12 scroll-smooth py-4"
             >
                 {items.map((item, index) => (
                     <motion.div

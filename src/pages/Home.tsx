@@ -135,7 +135,7 @@ export const Home = () => {
         >
             {featured && <Hero item={featured} />}
 
-            <div className="relative -mt-32 z-30 space-y-8 pb-20">
+            <div className="relative -mt-32 z-30 space-y-8 pb-20 max-w-[1920px] mx-auto">
                 {/* Movies Section */}
                 {(isHome || isMovies) && trendingMovies.length > 0 && (
                     <Carousel title="TRENDING MOVIES" items={trendingMovies} />
